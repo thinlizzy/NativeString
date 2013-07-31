@@ -1,5 +1,6 @@
 #include "../NativeString.h"
 #include <iostream>
+#include <sstream>
 #include <windows.h>
 
 namespace die {
@@ -13,7 +14,7 @@ std::wstring utf8_to_ws(char const * text, int size)
     int total = MultiByteToWideChar(CP_UTF8,0,text,size,0,0);
     std::wstring converted(total,L'\0');
     if( MultiByteToWideChar(CP_UTF8,0,text,size,&converted[0],total) == 0 ) {
-        std::cerr << "error converting string\n";
+        std::cerr << "error converting string" << std::endl;
     }
     return converted;
 }
@@ -27,6 +28,7 @@ std::wstring utf8_to_ws(char const * text)
 
 std::wstring utf8_to_ws(std::string const & text)
 {
+    if( text.empty() ) return std::wstring();
     return utf8_to_ws(text.c_str(),text.size());
 }
 
@@ -38,7 +40,7 @@ std::wstring encodedToWs(NativeString::Encoding encoding, std::string const & st
         case NativeString::utf8:
             return utf8_to_ws(strEncoded);
         default:
-            std::cerr << "unsupported encoding\n";
+            std::cerr << "unsupported encoding" << std::endl;
             return std::wstring();
     }
 }
@@ -94,6 +96,20 @@ NativeString::NativeString(wchar_t const * strUTF16):
 std::wstring NativeString::toUTF16() const
 {
     return wstr;
+}
+
+template<typename T>
+T lexical_cast(std::wstring const & wstr)
+{
+    T result = T();
+    std::basic_istringstream<wchar_t> iss(wstr);
+    iss >> result;
+    return result;
+}
+
+int NativeString::toInt() const
+{
+    return lexical_cast<int>(wstr);
 }
 
 bool NativeString::empty() const

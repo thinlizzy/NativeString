@@ -28,6 +28,8 @@ public:
     std::string toUTF8() const;
     std::wstring toUTF16() const;
     
+    int toInt() const;
+    
     bool empty() const;
     NativeString & operator+=(NativeString const & other);
     bool operator==(NativeString const & other) const;
