@@ -22,6 +22,7 @@ public:
     NativeString(std::string const & strUTF8);
     NativeString(std::wstring const & strUTF16);
     NativeString(char const * strUTF8);
+    NativeString(char const * strUTF8, size_t size);
     NativeString(wchar_t const * strUTF16);
     NativeString(Encoding encoding, std::string const & strEncoded);
     
@@ -29,6 +30,9 @@ public:
     std::wstring toUTF16() const;
     
     int toInt() const;
+    double toDouble() const;
+    static NativeString toString(int value);
+    static NativeString toString(double value);
     
     bool empty() const;
     NativeString & operator+=(NativeString const & other);
@@ -44,5 +48,8 @@ inline std::ostream & operator<<(std::ostream & os, NativeString const & str) { 
 inline std::wostream & operator<<(std::wostream & os, NativeString const & str) { return os << str.toUTF16(); }
 
 }
+
+inline die::NativeString operator"" _dies(char const * str, size_t size) { return die::NativeString(str,size); }
+
 
 #endif

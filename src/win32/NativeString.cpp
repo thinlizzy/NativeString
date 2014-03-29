@@ -73,6 +73,10 @@ NativeString::NativeString(char const * strUTF8):
     wstr(utf8_to_ws(strUTF8))
 {}
 
+NativeString::NativeString(char const * strUTF8, size_t size):
+    wstr(utf8_to_ws(strUTF8,size))
+{}
+
 NativeString::NativeString(NativeString::Encoding encoding, std::string const & strEncoded):
     wstr(encodedToWs(encoding,strEncoded))
 {}
@@ -110,6 +114,29 @@ T lexical_cast(std::wstring const & wstr)
 int NativeString::toInt() const
 {
     return lexical_cast<int>(wstr);
+}
+
+double NativeString::toDouble() const
+{
+    return lexical_cast<double>(wstr);
+}
+
+template<typename T>
+NativeString toStringT(T value)
+{
+    std::basic_ostringstream<wchar_t> oss;
+    oss << value;
+    return NativeString(oss.str());
+}
+
+NativeString NativeString::toString(int value)
+{
+    return toStringT(value);
+}
+
+NativeString NativeString::toString(double value)
+{
+    return toStringT(value);
 }
 
 bool NativeString::empty() const
