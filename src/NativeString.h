@@ -30,8 +30,10 @@ public:
     std::wstring toUTF16() const;
     
     int toInt() const;
+    float toFloat() const;
     double toDouble() const;
     static NativeString toString(int value);
+    static NativeString toString(float value);
     static NativeString toString(double value);
     
     bool empty() const;
@@ -43,6 +45,7 @@ public:
 };
 
 inline NativeString operator+(NativeString a, NativeString const & b) { return a+=b; }
+bool operator<(NativeString const & a, NativeString const & b);
 
 inline std::ostream & operator<<(std::ostream & os, NativeString const & str) { return os << str.toUTF8(); }
 inline std::wostream & operator<<(std::wostream & os, NativeString const & str) { return os << str.toUTF16(); }

@@ -9,12 +9,18 @@ NativeString::Encoding const NativeString::nativeEncoding = NativeString::utf16;
 
 std::wstring utf8_to_ws(char const * text, int size)
 {
+    if( size == 0 ) return std::wstring();
+    
 //    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 //    blah = converter.from_bytes(text);
     int total = MultiByteToWideChar(CP_UTF8,0,text,size,0,0);
     std::wstring converted(total,L'\0');
     if( MultiByteToWideChar(CP_UTF8,0,text,size,&converted[0],total) == 0 ) {
+#ifdef NDEBUG
         std::cerr << "error converting string" << std::endl;
+#else
+        std::cerr << "error converting [" << text << "]  size " << size << std::endl;
+#endif
     }
     return converted;
 }
@@ -116,6 +122,11 @@ int NativeString::toInt() const
     return lexical_cast<int>(wstr);
 }
 
+float NativeString::toFloat() const
+{
+    return lexical_cast<float>(wstr);
+}
+
 double NativeString::toDouble() const
 {
     return lexical_cast<double>(wstr);
@@ -130,6 +141,11 @@ NativeString toStringT(T value)
 }
 
 NativeString NativeString::toString(int value)
+{
+    return toStringT(value);
+}
+
+NativeString NativeString::toString(float value)
 {
     return toStringT(value);
 }
@@ -158,6 +174,11 @@ bool NativeString::operator==(NativeString const & other) const
 bool NativeString::operator!=(NativeString const & other) const
 {
     return wstr != other.wstr;
+}
+
+bool operator<(NativeString const & a, NativeString const & b)
+{
+    return a.wstr < b.wstr;
 }
 
 }
